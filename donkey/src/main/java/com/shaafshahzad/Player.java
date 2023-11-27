@@ -1,6 +1,6 @@
 package com.shaafshahzad;
 
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Stack;
 
 public class Player {
