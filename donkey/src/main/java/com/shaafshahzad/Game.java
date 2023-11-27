@@ -1,6 +1,8 @@
 package com.shaafshahzad;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -9,6 +11,7 @@ public class Game {
     private Player player1;
     private Player player2;
     private Deck deck;
+    private List<Stack<Card>> middlePiles;
 
     public Game() {
         this.player1 = new Player();
@@ -16,6 +19,12 @@ public class Game {
         this.deck = new Deck();
         this.deck.shuffle();
         distributeCards();
+
+        this.middlePiles = new ArrayList<>(4);
+        for (int i = 0; i < 4; i++) {
+            middlePiles.add(new Stack<Card>());
+        }
+
     }
 
     // distribute cards evenely to both players
@@ -53,7 +62,7 @@ public class Game {
         System.out.println("Player's turn: " + (player == player1 ? "Player 1" : "Player 2"));
         Player opponent = (player == player1) ? player2 : player1;
 
-        Card drawwnCard = null;
+        Card drawnCard = null;
 
         // initial choice to draw a card or play top card
         if (!player.isHandEmpty()) {
@@ -61,8 +70,8 @@ public class Game {
             int initialChoice = scanner.nextInt();
 
             if (initialChoice == 1) {
-                drawwnCard = player.drawCard();
-                System.out.println("Drawn card: " + drawwnCard);
+                drawnCard = player.drawCard();
+                System.out.println("Drawn card: " + drawnCard);
             } else {
                 if (!player.getFaceUpPile().isEmpty()
                         && canPlayOnPlayerPile(player.getTopCardOfFaceUpPile(), opponent)) {
@@ -125,7 +134,7 @@ public class Game {
 
     // check if player can play on opponents pile
     private boolean canPlayOnPlayerPile(Card card, Player player) {
-        if (player.getFaceUpPile().ieEmpty()) {
+        if (player.getFaceUpPile().isEmpty()) {
             return true;
         }
         return card.getValue() == player.getTopCardOfFaceUpPile().getValue() + 1;
@@ -161,12 +170,13 @@ public class Game {
             final String os = System.getProperty("os.name");
 
             if (os.contains("Windows")) {
-                Runtime.getRuntime().exec("cls");
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             } else {
-                Runtime.getRuntime().exec("clear");
+                new ProcessBuilder("clear").inheritIO().start().waitFor();
             }
         } catch (IOException | InterruptedException e) {
-            System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            // Exception handling
+            System.out.println("\n\n\n\n\n\n\n\n\n\n"); // fallback method, prints new lines to clear the screen
         }
     }
 
